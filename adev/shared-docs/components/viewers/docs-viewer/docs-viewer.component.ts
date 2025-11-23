@@ -49,8 +49,7 @@ export const DOCS_CODE_SELECTOR = '.docs-code';
 export const DOCS_CODE_MUTLIFILE_SELECTOR = '.docs-code-multifile';
 export const DOCS_CODE_TAB_GROUP_SELECTOR = '.docs-tab-group';
 export const DOCS_CODE_TAB_SELECTOR = '.docs-tab';
-// TODO: Update the branch/sha
-export const GITHUB_CONTENT_URL = 'https://github.com/angular/angular/blob/main/';
+const GITHUB_CONTENT_URL = 'https://github.com/angular/angular/blob/{{BUILD_SCM_ABBREV_HASH}}';
 
 @Component({
   selector: DOCS_VIEWER_SELECTOR,
@@ -171,9 +170,16 @@ export class DocViewer {
       return;
     }
 
-    const firstHeading = element.querySelector<HTMLHeadingElement>('h2,h3[id]');
+    let firstHeading = element.querySelector<HTMLElement>('h2,h3[id]');
     if (!firstHeading) {
       return;
+    }
+
+    // If the first header is in a card container element, place TOC element
+    // before the container.
+    const parentEl = firstHeading.parentElement;
+    if (parentEl && parentEl.classList.contains('docs-card-container-header')) {
+      firstHeading = parentEl.parentElement;
     }
 
     // Since the content of the main area is dynamically created and there is

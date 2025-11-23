@@ -157,9 +157,9 @@ Here's a code example fully styled:
 
 We also have styling for the terminal, just set the language as `shell`:
 
-<docs-code language="shell">
-  npm install @angular/material --save
-</docs-code>
+```shell
+npm install @angular/material --save
+```
 
 #### `<docs-code>` Attributes
 
@@ -184,11 +184,6 @@ You can create multifile examples by wrapping the examples inside a `<docs-code-
 <docs-code-multifile
   path="adev/src/content/examples/hello-world/src/app/app.component.ts"
   preview>
-<docs-code
-    path="adev/src/content/examples/hello-world/src/app/app.component.ts"
-    diff="adev/src/content/examples/hello-world/src/app/app.component-old.ts"
-    linenums
-    visibleLines="[3, 11]"/>
 <docs-code
     path="adev/src/content/examples/hello-world/src/app/app.component.html"
     highlight="[1]"
@@ -261,9 +256,10 @@ Steps must start on a new line, and can contain `docs-code`s and other nested el
 
 To install the Angular CLI, open a terminal window and run the following command:
 
-  <docs-code language="shell">
-    npm install -g @angular/cli
-  </docs-code>
+```shell
+npm install -g @angular/cli
+```
+
 </docs-step>
 
 <docs-step title="Create a workspace and initial application">
@@ -272,9 +268,10 @@ To install the Angular CLI, open a terminal window and run the following command
 To create a new workspace and initial starter app:
 
 - Run the CLI command `ng new` and provide the name `my-app`, as shown here:
-  <docs-code language="shell">
+
+  ```shell
   ng new my-app
-  </docs-code>
+  ```
 
 - The ng new command prompts you for information about features to include in the initial app. Accept the defaults by pressing the Enter or Return key.
 
@@ -288,10 +285,11 @@ To create a new workspace and initial starter app:
 
 1. Navigate to the workspace folder, such as `my-app`.
 2. Run the following command:
-   <docs-code language="shell">
+
+   ```shell
    cd my-app
    ng serve --open
-   </docs-code>
+   ```
 
 The `ng serve` command launches the server, watches your files, and rebuilds the app as you make changes to those files.
 
@@ -322,6 +320,11 @@ You can add images using the semantic Markdown image:
 
 ![Rhubarb the small cat](assets/images/kitchen-sink/rhubarb.jpg#small)
 ![Rhubarb the medium cat](assets/images/kitchen-sink/rhubarb.jpg#medium)
+
+## Add attributes using curly braces syntax
+
+![Lazy loaded image](assets/images/kitchen-sink/rhubarb.jpg {loading: 'lazy'})
+![Combined attributes](assets/images/kitchen-sink/rhubarb.jpg#small {loading: 'lazy', decoding: 'async', fetchpriority: 'low'})
 
 Embedded videos are created with `docs-video` and just need a `src` and `alt`:
 

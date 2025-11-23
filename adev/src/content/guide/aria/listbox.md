@@ -1,15 +1,40 @@
 <docs-decorative-header title="Listbox">
 </docs-decorative-header>
 
+<docs-pill-row>
+  <docs-pill href="https://www.w3.org/WAI/ARIA/apg/patterns/listbox/" title="Listbox pattern"/>
+  <docs-pill href="/api?query=listbox#angular_aria_listbox" title="Listbox API Reference"/>
+</docs-pill-row>
+
 ## Overview
 
 A directive that displays a list of options for users to select from, supporting keyboard navigation, single or multiple selection, and screen reader support.
 
-<docs-code-multifile preview hideCode path="adev/src/content/examples/aria/listbox/src/basic/app/app.ts">
-  <docs-code header="app.ts" path="adev/src/content/examples/aria/listbox/src/basic/app/app.ts"/>
-  <docs-code header="app.html" path="adev/src/content/examples/aria/listbox/src/basic/app/app.html"/>
-  <docs-code header="app.css" path="adev/src/content/examples/aria/listbox/src/basic/app/app.css"/>
-</docs-code-multifile>
+<docs-tab-group>
+  <docs-tab label="Basic">
+    <docs-code-multifile preview hideCode path="adev/src/content/examples/aria/listbox/src/basic/app/app.ts">
+      <docs-code header="app.ts" path="adev/src/content/examples/aria/listbox/src/basic/app/app.ts"/>
+      <docs-code header="app.html" path="adev/src/content/examples/aria/listbox/src/basic/app/app.html"/>
+      <docs-code header="app.css" path="adev/src/content/examples/aria/listbox/src/basic/app/app.css"/>
+    </docs-code-multifile>
+  </docs-tab>
+
+  <docs-tab label="Material">
+    <docs-code-multifile preview hideCode path="adev/src/content/examples/aria/listbox/src/basic/material/app/app.ts">
+      <docs-code header="app.ts" path="adev/src/content/examples/aria/listbox/src/basic/material/app/app.ts"/>
+      <docs-code header="app.html" path="adev/src/content/examples/aria/listbox/src/basic/material/app/app.html"/>
+      <docs-code header="app.css" path="adev/src/content/examples/aria/listbox/src/basic/material/app/app.css"/>
+    </docs-code-multifile>
+  </docs-tab>
+
+  <docs-tab label="Retro">
+    <docs-code-multifile preview hideCode path="adev/src/content/examples/aria/listbox/src/basic/retro/app/app.ts">
+      <docs-code header="app.ts" path="adev/src/content/examples/aria/listbox/src/basic/retro/app/app.ts"/>
+      <docs-code header="app.html" path="adev/src/content/examples/aria/listbox/src/basic/retro/app/app.html"/>
+      <docs-code header="app.css" path="adev/src/content/examples/aria/listbox/src/basic/retro/app/app.css"/>
+    </docs-code-multifile>
+  </docs-tab>
+</docs-tab-group>
 
 ## Usage
 
@@ -53,10 +78,31 @@ The `values` model signal provides two-way binding to the selected items. With `
 
 Lists sometimes work better horizontally, such as toolbar-like interfaces or tab-style selections. The `orientation` attribute changes both the layout and keyboard navigation direction.
 
-<docs-code-multifile preview hideCode path="adev/src/content/examples/aria/listbox/src/horizontal/app/app.ts">
-  <docs-code header="app.ts" path="adev/src/content/examples/aria/listbox/src/horizontal/app/app.ts" />
-  <docs-code header="app.html" path="adev/src/content/examples/aria/listbox/src/horizontal/app/app.html" />
-</docs-code-multifile>
+<docs-tab-group>
+  <docs-tab label="Basic">
+    <docs-code-multifile preview hideCode path="adev/src/content/examples/aria/listbox/src/horizontal/app/app.ts">
+      <docs-code header="app.ts" path="adev/src/content/examples/aria/listbox/src/horizontal/app/app.ts"/>
+      <docs-code header="app.html" path="adev/src/content/examples/aria/listbox/src/horizontal/app/app.html"/>
+      <docs-code header="app.css" path="adev/src/content/examples/aria/listbox/src/horizontal/app/app.css"/>
+    </docs-code-multifile>
+  </docs-tab>
+
+  <docs-tab label="Material">
+    <docs-code-multifile preview hideCode path="adev/src/content/examples/aria/listbox/src/horizontal/material/app/app.ts">
+      <docs-code header="app.ts" path="adev/src/content/examples/aria/listbox/src/horizontal/material/app/app.ts"/>
+      <docs-code header="app.html" path="adev/src/content/examples/aria/listbox/src/horizontal/material/app/app.html"/>
+      <docs-code header="app.css" path="adev/src/content/examples/aria/listbox/src/horizontal/material/app/app.css"/>
+    </docs-code-multifile>
+  </docs-tab>
+
+  <docs-tab label="Retro">
+    <docs-code-multifile preview hideCode path="adev/src/content/examples/aria/listbox/src/horizontal/retro/app/app.ts">
+      <docs-code header="app.ts" path="adev/src/content/examples/aria/listbox/src/horizontal/retro/app/app.ts"/>
+      <docs-code header="app.html" path="adev/src/content/examples/aria/listbox/src/horizontal/retro/app/app.html"/>
+      <docs-code header="app.css" path="adev/src/content/examples/aria/listbox/src/horizontal/retro/app/app.css"/>
+    </docs-code-multifile>
+  </docs-tab>
+</docs-tab-group>
 
 With `orientation="horizontal"`, left and right arrow keys navigate between options instead of up and down. The listbox automatically handles right-to-left (RTL) languages by reversing navigation direction.
 
@@ -70,10 +116,6 @@ Listbox supports two selection modes that control when items become selected. Ch
 </docs-code-multifile>
 
 The `'follow'` mode automatically selects the focused item, providing faster interaction when selection changes frequently. The `'explicit'` mode requires Space or Enter to confirm selection, preventing accidental changes while navigating. Dropdown patterns typically use `'follow'` mode for single selection.
-
-## Showcase
-
-TBD
 
 ## APIs
 
@@ -145,65 +187,7 @@ Listbox is used by these documented dropdown patterns:
 
 For complete dropdown patterns with trigger, popup, and overlay positioning, see those pattern guides instead of using listbox alone.
 
-## Styling
-
-The listbox directives don't include default styles. This allows full customization to match your design system. Apply styles through standard CSS classes or style bindings.
-
-### Styling the listbox
-
-The `ngListbox` directive automatically adds the `ngListbox` attribute to its host element, allowing you to target it with attribute selectors. The `ngOption` directive similarly adds the `ngOption` attribute to each option element.
-
-```css
-[ngListbox] {
-  display: block;
-  padding: 4px 0;
-  margin: 0;
-  list-style: none;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  max-height: 300px;
-  overflow-y: auto;
-}
-
-[ngListbox][orientation="horizontal"] {
-  display: flex;
-  max-height: none;
-  overflow-x: auto;
-  overflow-y: hidden;
-}
-```
-
-### Styling options
-
-```css
-[ngOption] {
-  padding: 8px 12px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-[ngOption]:hover {
-  background: #f5f5f5;
-}
-
-[ngOption][aria-selected="true"] {
-  background: #e3f2fd;
-  color: #1976d2;
-}
-
-[ngOption][aria-disabled="true"] {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-```
-
-### Styling focus
-
-```css
-[ngOption][data-active="true"] {
-  outline: 2px solid blue;
-  outline-offset: -2px;
-}
-```
+<docs-pill-row>
+  <docs-pill href="https://www.w3.org/WAI/ARIA/apg/patterns/listbox/" title="Listbox ARIA pattern"/>
+  <docs-pill href="/api/aria/listbox/Listbox" title="Listbox API Reference"/>
+</docs-pill-row>

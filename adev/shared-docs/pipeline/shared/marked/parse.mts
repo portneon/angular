@@ -15,6 +15,7 @@ import {docsPillRowExtension} from './extensions/docs-pill/docs-pill-row.mjs';
 import {docsVideoExtension} from './extensions/docs-video.mjs';
 import {docsWorkflowExtension} from './extensions/docs-workflow/docs-workflow.mjs';
 import {docsStepExtension} from './extensions/docs-workflow/docs-step.mjs';
+import {docsNavCardExtension, docsNavLinkExtension} from './extensions/docs-card/docs-nav-card.mjs';
 import {docsCardExtension} from './extensions/docs-card/docs-card.mjs';
 import {docsCardContainerExtension} from './extensions/docs-card/docs-card-container.mjs';
 import {docsDecorativeHeaderExtension} from './extensions/docs-decorative-header.mjs';
@@ -22,10 +23,13 @@ import {docsCodeBlockExtension} from './extensions/docs-code/docs-code-block.mjs
 import {docsCodeExtension, DocsCodeToken} from './extensions/docs-code/docs-code.mjs';
 import {docsCodeMultifileExtension} from './extensions/docs-code/docs-code-multifile.mjs';
 import {docsTabGroupExtension, docsTabExtension} from './extensions/docs-tabs.mjs';
+import {docsImageExtension} from './extensions/docs-image.mjs';
+
 import {hooks} from './hooks.mjs';
 
 let markedInstance: typeof marked;
 const extensions = [
+  docsImageExtension,
   docsAlertExtension,
   docsCalloutExtension,
   docsPillExtension,
@@ -39,6 +43,8 @@ const extensions = [
   docsCodeBlockExtension,
   docsCodeExtension,
   docsCodeMultifileExtension,
+  docsNavCardExtension,
+  docsNavLinkExtension,
   docsTabExtension,
   docsTabGroupExtension,
 ];

@@ -4,11 +4,9 @@ This migration helps projects remove imports of the `CommonModule` inside compon
 
 Run the schematic using the following command:
 
-<docs-code language="shell">
-
+```shell
 ng generate @angular/core:common-to-standalone
-
-</docs-code>
+```
 
 ## Options
 
@@ -26,7 +24,6 @@ import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-example',
-  standalone: true,
   imports: [CommonModule],
   template: `
     <div *ngIf="show">
@@ -48,7 +45,6 @@ import { AsyncPipe, JsonPipe, NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-example',
-  standalone: true,
   imports: [AsyncPipe, JsonPipe, NgIf],
   template: `
     <div *ngIf="show">
