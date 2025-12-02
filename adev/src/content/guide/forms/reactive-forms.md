@@ -56,7 +56,7 @@ Using the template binding syntax, the form control is now registered to the `na
 <docs-step title="Display the component">
 The `FormControl` assigned to the `name` property is displayed when the `<app-name-editor>` component is added to a template.
 
-<docs-code header="src/app/app.component.html (name editor)" path="adev/src/content/examples/reactive-forms/src/app/app.component.1.html" visibleRegion="app-name-editor"/>
+<docs-code header="app.component.html (name editor)" path="adev/src/content/examples/reactive-forms/src/app/app.component.1.html" visibleRegion="app-name-editor"/>
 </docs-step>
 </docs-workflow>
 
@@ -114,9 +114,9 @@ The following example shows how to manage multiple form control instances in a s
 
 Generate a `ProfileEditor` component and import the `FormGroup` and `FormControl` classes from the `@angular/forms` package.
 
-<docs-code language="shell">
+```shell
 ng generate component ProfileEditor
-</docs-code>
+```
 
 <docs-code header="profile-editor.component.ts (imports)" path="adev/src/content/examples/reactive-forms/src/app/profile-editor/profile-editor.component.1.ts" visibleRegion="imports"/>
 
@@ -381,6 +381,36 @@ Each time a new alias instance is added, the new form array instance is provided
 
 </docs-step>
 
+### Using `FormArrayDirective` for top-level form arrays
+
+You can bind a `FormArray` directly to a `<form>` element by using the `FormArrayDirective`.  
+This is useful when the form does not use a top-level `FormGroup`, and the array itself represents the full form model.
+
+```angular-ts
+import { Component } from '@angular/core';
+import { FormArray, FormControl } from '@angular/forms';
+
+@Component({
+  selector: 'form-array-example',
+  template: `
+    <form [formArray]="form">
+      @for (control of form.controls; track $index) {
+        <input [formControlName]="$index">
+      }
+    </form>
+  `,
+})
+export class FormArrayExampleComponent {
+  controls = [
+    new FormControl('fish'),
+    new FormControl('cat'),
+    new FormControl('dog'),
+  ];
+
+  form = new FormArray(this.controls);
+}
+```
+
 <docs-step title="Add an alias">
 
 Initially, the form contains one `Alias` field. To add another field, click the **Add Alias** button. You can also validate the array of aliases reported by the form model displayed by `Form Value` at the bottom of the template. Instead of a form control instance for each alias, you can compose another form group instance with additional fields. The process of defining a control for each item is the same.
@@ -542,3 +572,4 @@ For complete syntax details, see the API reference documentation for the [Forms 
 | `FormGroupDirective`   | Syncs an existing `FormGroup` instance to a DOM element.                                   |
 | `FormGroupName`        | Syncs a nested `FormGroup` instance to a DOM element.                                      |
 | `FormArrayName`        | Syncs a nested `FormArray` instance to a DOM element.                                      |
+| `FormArrayDirective`   | Syncs a standalone `FormArray` instance to a DOM element.                                  |

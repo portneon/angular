@@ -6,7 +6,7 @@
  * found in the LICENSE file at https://angular.dev/license
  */
 
-import {computed, Injector, signal} from '@angular/core';
+import {computed, effect, Injector, signal} from '@angular/core';
 import {TestBed} from '@angular/core/testing';
 import {
   apply,
@@ -100,6 +100,28 @@ describe('FieldNode', () => {
     );
     const childA = computed(() => f.a);
     expect(childA()).toBeDefined();
+  });
+
+  describe('resetting', () => {
+    it('can be reset with a value', () => {
+      const model = signal({a: 1, b: 2});
+      const f = form(model, {injector: TestBed.inject(Injector)});
+      f.a().markAsDirty();
+      f.a().markAsTouched();
+
+      f().reset({a: 5, b: 8});
+      expect(f.a().value()).toBe(5);
+      expect(f.a().dirty()).toBe(false);
+      expect(f.a().touched()).toBe(false);
+    });
+
+    it('can be reset without a value', () => {
+      const model = signal({a: 1, b: 2});
+      const f = form(model, {injector: TestBed.inject(Injector)});
+
+      f().reset();
+      expect(f.a().value()).toBe(1);
+    });
   });
 
   describe('dirty', () => {
@@ -387,6 +409,26 @@ describe('FieldNode', () => {
 
       f().reset();
       expect(f().touched()).toBe(false);
+    });
+
+    it('reset should not track model changes', () => {
+      const f = form(signal(''), {injector: TestBed.inject(Injector)});
+      const spy = jasmine.createSpy();
+      effect(
+        () => {
+          spy();
+          f().reset();
+        },
+        {injector: TestBed.inject(Injector)},
+      );
+
+      TestBed.tick();
+      expect(spy).toHaveBeenCalledTimes(1);
+
+      f().value.set('hi');
+
+      TestBed.tick();
+      expect(spy).toHaveBeenCalledTimes(1);
     });
 
     it('should not be marked as touched when is readonly', () => {

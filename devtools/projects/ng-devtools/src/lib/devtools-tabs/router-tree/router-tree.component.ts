@@ -24,7 +24,7 @@ import {MatSnackBar, MatSnackBarModule} from '@angular/material/snack-bar';
 import {ApplicationOperations} from '../../application-operations/index';
 import {RouteDetailsRowComponent} from './route-details-row.component';
 import {FrameManager} from '../../application-services/frame_manager';
-import {Events, MessageBus, Route} from '../../../../../protocol';
+import {Events, MessageBus, Route, RunGuardsAndResolvers} from '../../../../../protocol';
 import {SvgD3Node, TreeVisualizerConfig} from '../../shared/tree-visualizer/tree-visualizer';
 import {
   RouterTreeD3Node,
@@ -39,6 +39,13 @@ import {SplitAreaDirective} from '../../shared/split/splitArea.directive';
 import {Debouncer} from '../../shared/utils/debouncer';
 
 const SEARCH_DEBOUNCE = 250;
+const RUN_GUARDS_AND_RESOLVERS_OPTIONS: RunGuardsAndResolvers[] = [
+  'pathParamsChange',
+  'pathParamsOrQueryParamsChange',
+  'always',
+  'paramsChange',
+  'paramsOrQueryParamsChange',
+];
 
 @Component({
   selector: 'ng-router-tree',
@@ -68,6 +75,12 @@ export class RouterTreeComponent {
   protected routeData = computed<RouterTreeNode | undefined>(() => {
     return this.selectedRoute()?.data;
   });
+
+  protected hasStaticOptionRunGuardsAndResolvers = computed(() =>
+    RUN_GUARDS_AND_RESOLVERS_OPTIONS.includes(
+      this.routeData()?.runGuardsAndResolvers as RunGuardsAndResolvers,
+    ),
+  );
 
   routes = input.required<Route[]>();
   routerDebugApiSupport = input<boolean>(false);
@@ -150,7 +163,10 @@ export class RouterTreeComponent {
     );
   }
 
-  viewFunctionSource(functionName: string, type: 'title' | 'redirectTo'): void {
+  viewFunctionSource(
+    functionName: string,
+    type: 'title' | 'redirectTo' | 'matcher' | 'runGuardsAndResolvers',
+  ): void {
     if (functionName === '[Function]') {
       const message =
         'Cannot view the source of redirect functions defined inline (arrow or anonymous).';

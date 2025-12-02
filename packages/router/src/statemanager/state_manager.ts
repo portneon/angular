@@ -7,14 +7,14 @@
  */
 
 import {Location} from '@angular/common';
-import {inject, Injectable} from '@angular/core';
+import {EnvironmentInjector, inject, Injectable} from '@angular/core';
 import {SubscriptionLike} from 'rxjs';
 
 import {
   BeforeActivateRoutes,
   Event,
+  isRedirectingEvent,
   NavigationCancel,
-  NavigationCancellationCode,
   NavigationEnd,
   NavigationError,
   NavigationSkipped,
@@ -104,7 +104,7 @@ export abstract class StateManager {
     }
   }
 
-  protected routerState = createEmptyState(null);
+  protected routerState = createEmptyState(null, inject(EnvironmentInjector));
 
   /** Returns the current RouterState. */
   getRouterState(): RouterState {
@@ -212,11 +212,7 @@ export class HistoryStateManager extends StateManager {
       if (this.urlUpdateStrategy === 'deferred' && !currentTransition.extras.skipLocationChange) {
         this.setBrowserUrl(this.createBrowserPath(currentTransition), currentTransition);
       }
-    } else if (
-      e instanceof NavigationCancel &&
-      e.code !== NavigationCancellationCode.SupersededByNewNavigation &&
-      e.code !== NavigationCancellationCode.Redirect
-    ) {
+    } else if (e instanceof NavigationCancel && !isRedirectingEvent(e)) {
       this.restoreHistory(currentTransition);
     } else if (e instanceof NavigationError) {
       this.restoreHistory(currentTransition, true);

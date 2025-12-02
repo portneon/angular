@@ -172,72 +172,6 @@
           "rawComment": "/** Closes the combobox. */",
           "memberType": "method",
           "memberTags": []
-        },
-        {
-          "name": "expand",
-          "signatures": [
-            {
-              "name": "expand",
-              "entryType": "function",
-              "description": "Expands the combobox popup.",
-              "generics": [],
-              "isNewType": false,
-              "jsdocTags": [],
-              "params": [],
-              "rawComment": "/** Expands the combobox popup. */",
-              "returnType": "void"
-            }
-          ],
-          "implementation": {
-            "params": [],
-            "isNewType": false,
-            "returnType": "void",
-            "generics": [],
-            "name": "expand",
-            "description": "Expands the combobox popup.",
-            "entryType": "function",
-            "jsdocTags": [],
-            "rawComment": "/** Expands the combobox popup. */"
-          },
-          "entryType": "function",
-          "description": "Expands the combobox popup.",
-          "jsdocTags": [],
-          "rawComment": "/** Expands the combobox popup. */",
-          "memberType": "method",
-          "memberTags": []
-        },
-        {
-          "name": "collapse",
-          "signatures": [
-            {
-              "name": "collapse",
-              "entryType": "function",
-              "description": "Collapses the combobox popup.",
-              "generics": [],
-              "isNewType": false,
-              "jsdocTags": [],
-              "params": [],
-              "rawComment": "/** Collapses the combobox popup. */",
-              "returnType": "void"
-            }
-          ],
-          "implementation": {
-            "params": [],
-            "isNewType": false,
-            "returnType": "void",
-            "generics": [],
-            "name": "collapse",
-            "description": "Collapses the combobox popup.",
-            "entryType": "function",
-            "jsdocTags": [],
-            "rawComment": "/** Collapses the combobox popup. */"
-          },
-          "entryType": "function",
-          "description": "Collapses the combobox popup.",
-          "jsdocTags": [],
-          "rawComment": "/** Collapses the combobox popup. */",
-          "memberType": "method",
-          "memberTags": []
         }
       ],
       "generics": [
@@ -245,12 +179,8 @@
           "name": "V"
         }
       ],
-      "description": "The container element that wraps a combobox input and popup, and orchestrates its behavior.\n\nThe `ngCombobox` directive is the main entry point for creating a combobox and customizing its\nbehavior. It coordinates the interactions between the `ngComboboxInput` and the popup, which\nis defined by a `ng-template` with the `ngComboboxPopupContainer` directive. If using the\n`CdkOverlay`, the `cdkConnectedOverlay` directive takes the place of `ngComboboxPopupContainer`.\n\n```html\n<div ngCombobox filterMode=\"highlight\">\n  <input\n    ngComboboxInput\n    placeholder=\"Search for a state...\"\n    [(value)]=\"searchString\"\n  />\n\n  <ng-template ngComboboxPopupContainer>\n    <div ngListbox [(value)]=\"selectedValue\">",
+      "description": "The container element that wraps a combobox input and popup, and orchestrates its behavior.\n\nThe `ngCombobox` directive is the main entry point for creating a combobox and customizing its\nbehavior. It coordinates the interactions between the `ngComboboxInput` and the popup, which\nis defined by a `ng-template` with the `ngComboboxPopupContainer` directive. If using the\n`CdkOverlay`, the `cdkConnectedOverlay` directive takes the place of `ngComboboxPopupContainer`.\n\n```html\n<div ngCombobox filterMode=\"highlight\">\n  <input\n    ngComboboxInput\n    placeholder=\"Search for a state...\"\n    [(value)]=\"searchString\"\n  />\n\n  <ng-template ngComboboxPopupContainer>\n    <div ngListbox [(value)]=\"selectedValue\">\n      @for (option of filteredOptions(); track option) {\n        <div ngOption [value]=\"option\" [label]=\"option\">\n          <span>{{option}}</span>\n        </div>\n      }\n    </div>\n  </ng-template>\n</div>\n```",
       "jsdocTags": [
-        {
-          "name": "for",
-          "comment": "(option of filteredOptions(); track option) {\n<div ngOption [value]=\"option\" [label]=\"option\">\n<span>{{option}}</span>\n</div>\n}\n</div>\n</ng-template>\n</div>\n```"
-        },
         {
           "name": "developerPreview",
           "comment": "21.0"
@@ -260,8 +190,8 @@
       "implements": [],
       "source": {
         "filePath": "src/aria/combobox/combobox.ts",
-        "startLine": 64,
-        "endLine": 180
+        "startLine": 65,
+        "endLine": 176
       }
     },
     {
@@ -321,8 +251,8 @@
       ],
       "source": {
         "filePath": "src/aria/combobox/combobox.ts",
-        "startLine": 200,
-        "endLine": 246
+        "startLine": 196,
+        "endLine": 242
       }
     },
     {
@@ -342,8 +272,8 @@
       "implements": [],
       "source": {
         "filePath": "src/aria/combobox/combobox.ts",
-        "startLine": 278,
-        "endLine": 283
+        "startLine": 274,
+        "endLine": 279
       }
     },
     {
@@ -383,8 +313,8 @@
       ],
       "source": {
         "filePath": "src/aria/combobox/combobox.ts",
-        "startLine": 295,
-        "endLine": 310
+        "startLine": 291,
+        "endLine": 306
       }
     },
     {
@@ -463,8 +393,8 @@
       ],
       "source": {
         "filePath": "src/aria/combobox/combobox.ts",
-        "startLine": 327,
-        "endLine": 377
+        "startLine": 323,
+        "endLine": 373
       }
     }
   ],
@@ -491,6 +421,10 @@
     ],
     [
       "ElementRef",
+      "@angular/core"
+    ],
+    [
+      "forwardRef",
       "@angular/core"
     ],
     [
@@ -619,14 +553,6 @@
     ],
     [
       "Combobox.close",
-      "@angular/aria/combobox"
-    ],
-    [
-      "Combobox.expand",
-      "@angular/aria/combobox"
-    ],
-    [
-      "Combobox.collapse",
       "@angular/aria/combobox"
     ],
     [

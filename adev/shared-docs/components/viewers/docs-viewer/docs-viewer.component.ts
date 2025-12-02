@@ -39,6 +39,7 @@ import {TableOfContents} from '../../table-of-contents/table-of-contents.compone
 import {DomSanitizer} from '@angular/platform-browser';
 import {Breadcrumb} from '../../breadcrumb/breadcrumb.component';
 import {CopySourceCodeButton} from '../../copy-source-code-button/copy-source-code-button.component';
+import {CopyLinkButton} from '../../copy-link-anchor/copy-link-anchor.component';
 import {ExampleViewer} from '../example-viewer/example-viewer.component';
 import {TabGroup} from '../../tab-group/tab-group.component';
 
@@ -49,8 +50,7 @@ export const DOCS_CODE_SELECTOR = '.docs-code';
 export const DOCS_CODE_MUTLIFILE_SELECTOR = '.docs-code-multifile';
 export const DOCS_CODE_TAB_GROUP_SELECTOR = '.docs-tab-group';
 export const DOCS_CODE_TAB_SELECTOR = '.docs-tab';
-// TODO: Update the branch/sha
-export const GITHUB_CONTENT_URL = 'https://github.com/angular/angular/blob/main/';
+const GITHUB_CONTENT_URL = 'https://github.com/angular/angular/blob/{{BUILD_SCM_ABBREV_HASH}}';
 
 @Component({
   selector: DOCS_VIEWER_SELECTOR,
@@ -121,6 +121,8 @@ export class DocViewer {
       // In case when content contains static code snippets, then create buttons
       // responsible for copy source code.
       this.loadCopySourceCodeButtons();
+      // Setup copy link functionality for section anchor links
+      this.loadCopyLinkAnchors(contentContainer);
       // In case when content contains tabs, create tabs component and move
       // content in a tab into tab panel.
       this.constructTabs(contentContainer);
@@ -171,9 +173,16 @@ export class DocViewer {
       return;
     }
 
-    const firstHeading = element.querySelector<HTMLHeadingElement>('h2,h3[id]');
+    let firstHeading = element.querySelector<HTMLElement>('h2,h3[id]');
     if (!firstHeading) {
       return;
+    }
+
+    // If the first header is in a card container element, place TOC element
+    // before the container.
+    const parentEl = firstHeading.parentElement;
+    if (parentEl && parentEl.classList.contains('docs-card-container-header')) {
+      firstHeading = parentEl.parentElement;
     }
 
     // Since the content of the main area is dynamically created and there is
@@ -267,6 +276,22 @@ export class DocViewer {
     for (let codeSnippet of staticCodeSnippets) {
       const copySourceCodeButton = this.viewContainer.createComponent(CopySourceCodeButton);
       codeSnippet.appendChild(copySourceCodeButton.location.nativeElement);
+    }
+  }
+
+  private loadCopyLinkAnchors(element: HTMLElement): void {
+    const docsAnchors = Array.from(element.querySelectorAll<HTMLAnchorElement>('a.docs-anchor'));
+
+    for (const anchor of docsAnchors) {
+      const href = anchor.getAttribute('href')!;
+      const label = anchor.textContent!;
+
+      const copyLinkButtonRef = this.viewContainer.createComponent(CopyLinkButton);
+      copyLinkButtonRef.setInput('href', href);
+      copyLinkButtonRef.setInput('label', label);
+      copyLinkButtonRef.setInput('matTooltip', `Copy link to ${label}`);
+
+      anchor.appendChild(copyLinkButtonRef.location.nativeElement);
     }
   }
 

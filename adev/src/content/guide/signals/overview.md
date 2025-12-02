@@ -124,7 +124,7 @@ Instead, use `computed` signals to model state that depends on other state.
 
 ### Injection context
 
-By default, you can only create an `effect()` within an [injection context](guide/di/dependency-injection-context) (where you have access to the `inject` function). The easiest way to satisfy this requirement is to call `effect` within a component, directive, or service `constructor`:
+By default, you can only create an `effect()` within an [injection context](guide/di/dependency-injection-context) (where you have access to the [`inject`](/api/core/inject) function). The easiest way to satisfy this requirement is to call `effect` within a component, directive, or service `constructor`:
 
 ```ts
 @Component({...})
@@ -194,6 +194,29 @@ data.set(['test']);
 Equality functions can be provided to both writable and computed signals.
 
 HELPFUL: By default, signals use referential equality ([`Object.is()`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object/is) comparison).
+
+### Type checking signals
+
+You can use `isSignal` to check if a value is a `Signal`:
+
+```ts
+const count = signal(0);
+const doubled = computed(() => count() * 2);
+
+isSignal(count); // true
+isSignal(doubled); // true
+isSignal(42); // false
+```
+
+To specifically check if a signal is writable, use `isWritableSignal`:
+
+```ts
+const count = signal(0);
+const doubled = computed(() => count() * 2);
+
+isWritableSignal(count); // true
+isWritableSignal(doubled); // false
+```
 
 ### Reading without tracking dependencies
 

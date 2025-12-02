@@ -14,7 +14,7 @@ Form models solve this by centralizing form data in a single writable signal. Wh
 
 A form model is a writable signal created with Angular's `signal()` function. The signal holds an object that represents your form's data structure.
 
-```ts
+```angular-ts
 import { Component, signal } from '@angular/core'
 import { form, Field } from '@angular/forms/signals'
 
@@ -108,22 +108,6 @@ const userModel = signal<UserData>({
 
 Fields set to `undefined` are excluded from the field tree. A model with `{value: undefined}` behaves identically to `{}` - accessing the field returns `undefined` rather than a `FieldTree`.
 
-### Dynamic field addition
-
-You can dynamically add fields by updating the model with new properties. The field tree automatically updates to include new fields when they appear in the model value.
-
-```ts
-// Start with just email
-const model = signal({ email: '' })
-const myForm = form(model)
-
-// Later, add a password field
-model.update(current => ({ ...current, password: '' }))
-// myForm.password is now available
-```
-
-This pattern is useful when fields become relevant based on user choices or loaded data.
-
 ## Reading model values
 
 You can access form values in two ways: directly from the model signal, or through individual fields. Each approach serves a different purpose.
@@ -150,7 +134,7 @@ Each field in the field tree is a function. Calling a field returns a `FieldStat
 
 Access field state when working with individual fields in templates or reactive computations:
 
-```ts
+```angular-ts
 @Component({
   template: `
     <p>Current email: {{ loginForm.email().value() }}</p>
@@ -172,15 +156,9 @@ Field state provides reactive signals for each field's value, making it suitable
 TIP: Field state includes many more signals beyond `value()`, such as validation state (e.g., valid, invalid, errors), interaction tracking (e.g., touched, dirty), and visibility (e.g., hidden, disabled).
 
 <!-- TODO: UNCOMMENT BELOW WHEN GUIDE IS AVAILABLE -->
-<!-- See the [Field State Management guide](guide/forms/signal-forms/field-state-management) for complete coverage. -->
+<!-- See the [Field State Management guide](guide/forms/signals/field-state-management) for complete coverage. -->
 
 ## Updating form models programmatically
-
-Form models update through programmatic mechanisms:
-
-1. [Replace the entire form model](#replacing-form-models-with-set) with `set()`
-2. [Update one or more fields](#update-one-or-more-fields-with-update) with `update()`
-3. [Update a single field directly](#update-a-single-field-directly-with-set) through field state
 
 ### Replacing form models with `set()`
 
@@ -205,21 +183,6 @@ resetForm() {
 ```
 
 This approach works well when loading data from an API or resetting the entire form.
-
-### Update one or more fields with `update()`
-
-Use `update()` to modify specific fields while preserving others:
-
-```ts
-updateEmail(newEmail: string) {
-  this.userModel.update(current => ({
-    ...current,
-    email: newEmail,
-  }));
-}
-```
-
-This pattern is useful when you need to change one or more fields based on the current model state.
 
 ### Update a single field directly with `set()`
 
@@ -292,7 +255,7 @@ This synchronization happens automatically. You don't write subscriptions or eve
 
 ### Example: Both directions
 
-```ts
+```angular-ts
 @Component({
   template: `
     <input type="text" [field]="userForm.name" />
@@ -305,7 +268,7 @@ export class UserComponent {
   userForm = form(this.userModel)
 
   setName(name: string) {
-    this.userModel.update(current => ({ ...current, name }))
+    this.userForm.name().value.set(name);
     // Input automatically displays 'Bob'
   }
 }
@@ -386,7 +349,7 @@ userForm.settings.theme // FieldTree<string>
 
 In templates, you bind nested fields the same way as top-level fields:
 
-```ts
+```angular-ts
 @Component({
   template: `
     <input [field]="userForm.profile.firstName" />
@@ -419,7 +382,7 @@ orderForm.items[0].quantity // FieldTree<number>
 
 Array items containing objects automatically receive tracking identities, which helps maintain field state even when items change position in the array. This ensures validation state and user interactions persist correctly when arrays are reordered.
 
-<!-- TBD: For dynamic arrays and complex array operations, see the [Working with arrays guide](guide/forms/signal-forms/arrays). -->
+<!-- TBD: For dynamic arrays and complex array operations, see the [Working with arrays guide](guide/forms/signals/arrays). -->
 
 ## Model design best practices
 
@@ -526,11 +489,14 @@ async loadExistingUser() {
 
 For forms that always start with existing data, you might wait to render the form until data loads in order to avoid a flash of empty fields.
 
-<!-- TODO: UNCOMMENT WHEN THE GUIDES ARE AVAILABLE -->
-<!-- ## Next steps
+## Next steps
 
+This guide covered creating models and updating values. Related guides explore other aspects of Signal Forms:
+
+<!-- TODO: UNCOMMENT WHEN THE GUIDES ARE AVAILABLE -->
 <docs-pill-row>
-  <docs-pill href="guide/forms/signal-forms/field-state-management" title="Field State Management" />
-  <docs-pill href="guide/forms/signal-forms/validation" title="Validation" />
-  <docs-pill href="guide/forms/signal-forms/arrays" title="Working with Arrays" />
-</docs-pill-row> -->
+  <docs-pill href="guide/forms/signals/field-state-management" title="Field state management" />
+  <docs-pill href="guide/forms/signals/validation" title="Validation" />
+  <docs-pill href="guide/forms/signals/custom-controls" title="Custom controls" />
+  <!-- <docs-pill href="guide/forms/signals/arrays" title="Working with Arrays" /> -->
+</docs-pill-row>

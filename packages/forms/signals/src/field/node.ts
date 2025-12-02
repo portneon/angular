@@ -6,7 +6,7 @@
  * found in the LICENSE file at https://angular.dev/license
  */
 
-import {computed, linkedSignal, type Signal, type WritableSignal} from '@angular/core';
+import {computed, linkedSignal, type Signal, untracked, type WritableSignal} from '@angular/core';
 import type {Field} from '../api/field_directive';
 import {
   AggregateMetadataKey,
@@ -223,13 +223,23 @@ export class FieldNode implements FieldState<unknown> {
    * Resets the {@link touched} and {@link dirty} state of the field and its descendants.
    *
    * Note this does not change the data model, which can be reset directly if desired.
+   *
+   * @param value Optional value to set to the form. If not passed, the value will not be changed.
    */
-  reset(): void {
+  reset(value?: unknown): void {
+    untracked(() => this._reset(value));
+  }
+
+  private _reset(value?: unknown) {
+    if (value) {
+      this.value.set(value);
+    }
+
     this.nodeState.markAsUntouched();
     this.nodeState.markAsPristine();
 
     for (const child of this.structure.children()) {
-      child.reset();
+      child._reset();
     }
   }
 

@@ -8,11 +8,9 @@ This schematic helps to transform components, directive and pipes in existing pr
 
 Run the schematic using the following command:
 
-<docs-code language="shell">
-
+```shell
 ng generate @angular/core:standalone
-
-</docs-code>
+```
 
 ## Before updating
 
@@ -79,7 +77,7 @@ HELPFUL: The schematic ignores NgModules which bootstrap a component during this
 export class SharedModule {}
 ```
 
-```typescript
+```angular-ts
 // greeter.component.ts
 @Component({
   selector: 'greeter',
@@ -102,7 +100,7 @@ export class GreeterComponent {
 export class SharedModule {}
 ```
 
-```typescript
+```angular-ts
 // greeter.component.ts
 @Component({
   selector: 'greeter',

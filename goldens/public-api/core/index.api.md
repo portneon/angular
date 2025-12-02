@@ -1007,7 +1007,7 @@ export interface InputFunction {
     };
 }
 
-// @public
+// @public (undocumented)
 export interface InputOptions<T, TransformT> {
     alias?: string;
     debugName?: string;
@@ -1643,7 +1643,9 @@ export interface ResourceLoaderParams<R> {
 }
 
 // @public (undocumented)
-export type ResourceOptions<T, R> = PromiseResourceOptions<T, R> | StreamingResourceOptions<T, R>;
+export type ResourceOptions<T, R> = (PromiseResourceOptions<T, R> | StreamingResourceOptions<T, R>) & {
+    debugName?: string;
+};
 
 // @public
 export interface ResourceRef<T> extends WritableResource<T> {

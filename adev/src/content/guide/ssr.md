@@ -1,6 +1,6 @@
 # Server and hybrid rendering
 
-Angular ships all applications as client-side rendered (CSR) by default. While this approach delivers a initial payload that's lightweight, it introduces trade-offs including slower load times, degraded performance metrics, and higher resource demands since the user's device performs most of the computations. As a result, many applications achieve significant performance improvements by integrating server-side rendering (SSR) into a hybrid rendering strategy.
+Angular ships all applications as client-side rendered (CSR) by default. While this approach delivers an initial payload that's lightweight, it introduces trade-offs including slower load times, degraded performance metrics, and higher resource demands since the user's device performs most of the computations. As a result, many applications achieve significant performance improvements by integrating server-side rendering (SSR) into a hybrid rendering strategy.
 
 ## What is hybrid rendering?
 
@@ -211,7 +211,7 @@ export const serverRoutes: ServerRoute[] = [
 
 Because [`getPrerenderParams`](api/ssr/ServerRoutePrerenderWithParams#getPrerenderParams 'API reference') exclusively applies to [`RenderMode.Prerender`](api/ssr/RenderMode#Prerender 'API reference'), this function always runs at _build-time_. `getPrerenderParams` must not rely on any browser-specific or server-specific APIs for data.
 
-IMPORTANT: When using [`inject`](api/core/inject 'API reference') inside `getPrerenderParams`, please remember that `inject` must be used synchronously. It cannot be invoked within asynchronous callbacks or following any `await` statements. For more information, refer to [`runInInjectionContext`](api/core/runInInjectionContext).
+IMPORTANT: When using [`inject`](api/core/inject 'API reference') inside `getPrerenderParams`, please remember that `inject` must be used synchronously. It cannot be invoked within asynchronous callbacks or following any `await` statements. For more information, refer to `runInInjectionContext`.
 
 #### Fallback strategies
 
@@ -223,7 +223,7 @@ The available fallback strategies are:
 - **Client:** Falls back to client-side rendering.
 - **None:** No fallback. Angular will not handle requests for paths that are not prerendered.
 
-```typescript
+```ts
 // app.routes.server.ts
 import { RenderMode, PrerenderFallback, ServerRoute } from '@angular/ssr';
 
@@ -246,26 +246,30 @@ export const serverRoutes: ServerRoute[] = [
 
 Some common browser APIs and capabilities might not be available on the server. Applications cannot make use of browser-specific global objects like `window`, `document`, `navigator`, or `location` as well as certain properties of `HTMLElement`.
 
-In general, code which relies on browser-specific symbols should only be executed in the browser, not on the server. This can be enforced through the [`afterEveryRender`](api/core/afterEveryRender) and [`afterNextRender`](api/core/afterNextRender) lifecycle hooks. These are only executed on the browser and skipped on the server.
+In general, code which relies on browser-specific symbols should only be executed in the browser, not on the server. This can be enforced through the `afterEveryRender` and `afterNextRender` lifecycle hooks. These are only executed on the browser and skipped on the server.
 
 ```angular-ts
-import { Component, ViewChild, afterNextRender } from '@angular/core';
+import { Component, viewChild, afterNextRender } from '@angular/core';
 
 @Component({
   selector: 'my-cmp',
   template: `<span #content>{{ ... }}</span>`,
 })
 export class MyComponent {
-  @ViewChild('content') contentRef: ElementRef;
+  contentRef = viewChild.required<ElementRef>('content');
 
   constructor() {
     afterNextRender(() => {
       // Safe to check `scrollHeight` because this will only run in the browser, not the server.
-      console.log('content height: ' + this.contentRef.nativeElement.scrollHeight);
+      console.log('content height: ' + this.contentRef().nativeElement.scrollHeight);
     });
   }
 }
 ```
+
+NOTE: Prefer [platform-specific providers](guide/ssr#providing-platform-specific-implementations) over runtime checks with `isPlatformBrowser` or `isPlatformServer`.
+
+IMPORTANT: Avoid using `isPlatformBrowser` in templates with `@if` or other conditionals to render different content on server and client. This causes hydration mismatches and layout shifts, negatively impacting user experience and [Core Web Vitals](https://web.dev/learn-core-web-vitals/). Instead, use `afterNextRender` for browser-specific initialization and keep rendered content consistent across platforms.
 
 ## Setting providers on the server
 
@@ -273,6 +277,98 @@ On the server side, top level provider values are set once when the application 
 This means that providers configured with `useValue` will keep their value across multiple requests, until the server application is restarted.
 
 If you want to generate a new value for each request, use a factory provider with `useFactory`. The factory function will run for every incoming request, ensuring that a new value is created and assigned to the token each time.
+
+## Providing platform-specific implementations
+
+When your application needs different behavior on the browser and server, provide separate service implementations for each platform. This approach centralizes platform logic in dedicated services.
+
+```ts
+export abstract class AnalyticsService {
+  abstract trackEvent(name: string): void;
+}
+```
+
+Create the browser implementation:
+
+```ts
+@Injectable()
+export class BrowserAnalyticsService implements AnalyticsService {
+  trackEvent(name: string): void {
+    // Sends the event to the browser-based third-party analytics provider
+  }
+}
+```
+
+Create the server implementation:
+
+```ts
+@Injectable()
+export class ServerAnalyticsService implements AnalyticsService {
+  trackEvent(name: string): void {
+    // Records the event on the server
+  }
+}
+```
+
+Register the browser implementation in your main application configuration:
+
+```ts
+// app.config.ts
+export const appConfig: ApplicationConfig = {
+  providers: [
+    { provide: AnalyticsService, useClass: BrowserAnalyticsService },
+  ]
+};
+```
+
+Override with the server implementation in your server configuration:
+
+```ts
+// app.config.server.ts
+const serverConfig: ApplicationConfig = {
+  providers: [
+    { provide: AnalyticsService, useClass: ServerAnalyticsService },
+  ]
+};
+```
+
+Inject and use the service in your components:
+
+```ts
+@Component({/* ... */})
+export class Checkout {
+  private analytics = inject(AnalyticsService);
+
+  onAction() {
+    this.analytics.trackEvent('action');
+  }
+}
+```
+
+## Accessing Document via DI
+
+When working with server-side rendering, you should avoid directly referencing browser-specific globals like `document`. Instead, use the [`DOCUMENT`](api/core/DOCUMENT) token to access the document object in a platform-agnostic way.
+
+```ts
+import { Injectable, inject, DOCUMENT } from '@angular/core';
+
+@Injectable({ providedIn: 'root' })
+export class CanonicalLinkService {
+  private readonly document = inject(DOCUMENT);
+
+  // During server rendering, inject a <link rel="canonical"> tag
+  // so the generated HTML includes the correct canonical URL
+  setCanonical(href: string): void {
+    const link = this.document.createElement('link');
+    link.rel = 'canonical';
+    link.href = href;
+    this.document.head.appendChild(link);
+  }
+}
+
+```
+
+HELPFUL: For managing meta tags, Angular provides the `Meta` service.
 
 ## Accessing Request and Response via DI
 
@@ -461,7 +557,7 @@ httpClient.get('/api/sensitive-data', { transferCache: false });
 
 The `@angular/ssr/node` extends `@angular/ssr` specifically for Node.js environments. It provides APIs that make it easier to implement server-side rendering within your Node.js application. For a complete list of functions and usage examples, refer to the [`@angular/ssr/node` API reference](api/ssr/node/AngularNodeAppEngine) API reference.
 
-```typescript
+```ts
 // server.ts
 import { AngularNodeAppEngine, createNodeRequestHandler, writeResponseToNodeResponse } from '@angular/ssr/node';
 import express from 'express';
@@ -492,7 +588,7 @@ export const reqHandler = createNodeRequestHandler(app);
 
 The `@angular/ssr` provides essential APIs for server-side rendering your Angular application on platforms other than Node.js. It leverages the standard [`Request`](https://developer.mozilla.org/en-US/docs/Web/API/Request) and [`Response`](https://developer.mozilla.org/en-US/docs/Web/API/Response) objects from the Web API, enabling you to integrate Angular SSR into various server environments. For detailed information and examples, refer to the [`@angular/ssr` API reference](api/ssr/AngularAppEngine).
 
-```typescript
+```ts
 // server.ts
 import { AngularAppEngine, createRequestHandler } from '@angular/ssr';
 
